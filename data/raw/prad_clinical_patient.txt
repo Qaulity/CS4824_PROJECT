@@ -1,0 +1,338 @@
+#Patient Identifier	Subtype	Sex	Diagnosis Age	Race Category	Preop PSA	Surgical Margin Resection Status	Erg status	Cdkn1b mut	Rb1 mut	Zmym3 mut	Brca1 cna
+#Identifier to uniquely specify a patient.	Subtype	Sex	Age at which a condition or disease was first diagnosed.	The text for reporting information about race.	Preop PSA	Text terms to describe the status of a tissue margin following surgical resection.	Erg status	Cdkn1b mut	Rb1 mut	Zmym3 mut	Brca1 cna
+#STRING	STRING	STRING	NUMBER	STRING	NUMBER	STRING	STRING	NUMBER	NUMBER	NUMBER	STRING
+#1	1	1	1	1	1	1	1	1	1	1	1
+PATIENT_ID	SUBTYPE	SEX	AGE	RACE	PREOPERATIVE_PSA	RESIDUAL_TUMOR	ERG_STATUS	CDKN1B_MUT	RB1_MUT	ZMYM3_MUT	BRCA1_CNA
+TCGA-EJ-5502	1-ERG	Male	50	Not Available	5.3	R0	fusion	0	0	0	diploid
+TCGA-HC-7209	1-ERG	Male	60	Not Available	7.9	R0	fusion	0	0	0	diploid
+TCGA-HC-7748	1-ERG	Male	60	Not Available	7.5	R0	fusion	0	0	0	hetloss
+TCGA-J4-A83N	1-ERG	Male	57	Not Available	NA	R0	fusion	0	0	0	diploid
+TCGA-2A-A8VV	1-ERG	Male	52	Not Available	NA	R0	fusion	0	0	0	diploid
+TCGA-2A-A8VT	1-ERG	Male	NA	ASIAN	NA	NA	fusion	0	0	0	hetloss
+TCGA-EJ-5499	1-ERG	Male	61	ASIAN	5.2	R0	fusion	0	0	0	diploid
+TCGA-FC-7708	1-ERG	Male	52	ASIAN	7.9	RX	fusion	0	0	0	diploid
+TCGA-KC-A4BV	1-ERG	Male	66	ASIAN	12.9	R0	fusion	0	0	1	hetloss
+TCGA-EJ-7321	1-ERG	Male	57	BLACK OR AFRICAN AMERICAN	2.2	R0	fusion	0	0	0	diploid
+TCGA-EJ-8469	1-ERG	Male	46	BLACK OR AFRICAN AMERICAN	NA	RX	fusion	0	0	0	diploid
+TCGA-HC-7077	1-ERG	Male	64	BLACK OR AFRICAN AMERICAN	7.6	R0	fusion	0	0	0	diploid
+TCGA-HC-8257	1-ERG	Male	70	BLACK OR AFRICAN AMERICAN	8.6	R1	fusion	0	0	0	diploid
+TCGA-HC-8260	1-ERG	Male	43	BLACK OR AFRICAN AMERICAN	5.5	R1	fusion	0	0	0	diploid
+TCGA-J4-8198	1-ERG	Male	49	BLACK OR AFRICAN AMERICAN	17.9	NA	fusion	0	0	0	diploid
+TCGA-KC-A4BN	1-ERG	Male	55	BLACK OR AFRICAN AMERICAN	6.7	R0	fusion	0	0	0	diploid
+TCGA-KK-A6DY	1-ERG	Male	50	BLACK OR AFRICAN AMERICAN	4.9	R1	fusion	0	0	0	diploid
+TCGA-KK-A6E2	1-ERG	Male	54	BLACK OR AFRICAN AMERICAN	6.7	R0	fusion	0	0	0	diploid
+TCGA-KK-A8I5	1-ERG	Male	NA	BLACK OR AFRICAN AMERICAN	NA	NA	fusion	0	0	0	diploid
+TCGA-VP-A875	1-ERG	Male	67	BLACK OR AFRICAN AMERICAN	NA	R0	fusion	0	0	0	diploid
+TCGA-VP-A87C	1-ERG	Male	67	BLACK OR AFRICAN AMERICAN	NA	R0	fusion	0	0	0	hetloss
+TCGA-2A-A8VL	1-ERG	Male	51	WHITE	NA	R0	fusion	0	0	0	hetloss
+TCGA-CH-5739	1-ERG	Male	65	WHITE	4.8	R0	fusion	0	0	0	diploid
+TCGA-CH-5740	1-ERG	Male	57	WHITE	NA	R0	fusion	0	0	0	hetloss
+TCGA-CH-5741	1-ERG	Male	56	WHITE	28	R1	fusion	0	0	1	diploid
+TCGA-CH-5743	1-ERG	Male	66	WHITE	2.2	R0	fusion	0	0	0	diploid
+TCGA-CH-5744	1-ERG	Male	64	WHITE	9.6	R0	fusion	0	0	0	diploid
+TCGA-CH-5746	1-ERG	Male	57	WHITE	6.6	R1	fusion	0	0	0	diploid
+TCGA-CH-5752	1-ERG	Male	66	WHITE	9.8	R0	fusion	1	0	0	diploid
+TCGA-CH-5754	1-ERG	Male	65	WHITE	37.4	R1	fusion	0	0	0	diploid
+TCGA-CH-5764	1-ERG	Male	66	WHITE	14	R0	fusion	0	0	0	diploid
+TCGA-CH-5765	1-ERG	Male	55	WHITE	37.9	R0	fusion	0	0	0	diploid
+TCGA-CH-5766	1-ERG	Male	55	WHITE	13.9	R0	fusion	0	0	0	diploid
+TCGA-CH-5768	1-ERG	Male	72	WHITE	12.8	R0	fusion	0	0	0	diploid
+TCGA-CH-5769	1-ERG	Male	48	WHITE	NA	R1	fusion	0	0	0	diploid
+TCGA-CH-5789	1-ERG	Male	61	WHITE	5.7	R0	fusion	0	0	0	diploid
+TCGA-CH-5790	1-ERG	Male	64	WHITE	5.2	R0	fusion	0	0	0	diploid
+TCGA-CH-5791	1-ERG	Male	72	WHITE	10.1	R1	fusion	0	0	0	diploid
+TCGA-CH-5794	1-ERG	Male	65	WHITE	6.2	R0	fusion	0	0	0	diploid
+TCGA-EJ-5495	1-ERG	Male	68	WHITE	10.8	R0	fusion	0	0	0	diploid
+TCGA-EJ-5496	1-ERG	Male	59	WHITE	6.5	R0	fusion	0	0	0	diploid
+TCGA-EJ-5497	1-ERG	Male	47	WHITE	7.2	R0	fusion	0	0	0	diploid
+TCGA-EJ-5498	1-ERG	Male	56	WHITE	5	R0	fusion	0	0	0	diploid
+TCGA-EJ-5503	1-ERG	Male	50	WHITE	18.4	R0	fusion	0	0	0	diploid
+TCGA-EJ-5506	1-ERG	Male	67	WHITE	7.2	RX	fusion	0	0	0	diploid
+TCGA-EJ-5507	1-ERG	Male	54	WHITE	8.9	R0	fusion	0	0	0	diploid
+TCGA-EJ-5508	1-ERG	Male	65	WHITE	7.4	R0	fusion	0	0	0	diploid
+TCGA-EJ-5512	1-ERG	Male	46	WHITE	6.1	R0	fusion	0	0	0	diploid
+TCGA-EJ-5516	1-ERG	Male	49	WHITE	10.9	R0	fusion	0	0	0	diploid
+TCGA-EJ-5521	1-ERG	Male	63	WHITE	7.3	R0	fusion	0	0	0	diploid
+TCGA-EJ-5522	1-ERG	Male	51	WHITE	5.6	R0	fusion	0	0	0	diploid
+TCGA-EJ-5524	1-ERG	Male	57	WHITE	3.8	R0	fusion	0	0	0	hetloss
+TCGA-EJ-5525	1-ERG	Male	67	WHITE	4	R0	fusion	0	0	0	diploid
+TCGA-EJ-5526	1-ERG	Male	56	WHITE	28.6	R0	fusion	0	0	0	diploid
+TCGA-EJ-5527	1-ERG	Male	69	WHITE	7.7	R0	fusion	0	0	0	diploid
+TCGA-EJ-5530	1-ERG	Male	61	WHITE	9.2	R0	fusion	0	0	0	diploid
+TCGA-EJ-5542	1-ERG	Male	60	WHITE	19.3	R0	fusion	0	0	0	diploid
+TCGA-EJ-7314	1-ERG	Male	62	WHITE	6.1	R0	fusion	0	0	0	diploid
+TCGA-EJ-7315	1-ERG	Male	68	WHITE	5.8	R0	fusion	0	0	0	diploid
+TCGA-EJ-7327	1-ERG	Male	61	WHITE	12.2	R0	fusion	0	0	0	diploid
+TCGA-EJ-7328	1-ERG	Male	70	WHITE	6.5	R0	fusion	0	0	0	diploid
+TCGA-EJ-7783	1-ERG	Male	70	WHITE	12.8	R0	fusion	0	0	0	diploid
+TCGA-EJ-7784	1-ERG	Male	63	WHITE	4.1	R0	fusion	0	0	0	diploid
+TCGA-EJ-7785	1-ERG	Male	54	WHITE	4.3	R0	fusion	0	0	0	diploid
+TCGA-EJ-7793	1-ERG	Male	49	WHITE	3	R0	fusion	0	0	0	diploid
+TCGA-EJ-7797	1-ERG	Male	53	WHITE	5.4	R0	fusion	0	0	0	diploid
+TCGA-EJ-8472	1-ERG	Male	63	WHITE	NA	R0	fusion	0	0	0	hetloss
+TCGA-EJ-A46D	1-ERG	Male	53	WHITE	NA	NA	fusion	0	0	0	diploid
+TCGA-EJ-A65F	1-ERG	Male	59	WHITE	25	R0	fusion	0	0	0	diploid
+TCGA-EJ-A7NF	1-ERG	Male	56	WHITE	NA	R0	fusion	0	0	0	hetloss
+TCGA-EJ-A7NG	1-ERG	Male	64	WHITE	NA	R0	fusion	0	0	0	diploid
+TCGA-EJ-A7NK	1-ERG	Male	58	WHITE	NA	R0	fusion	0	0	0	diploid
+TCGA-G9-6329	1-ERG	Male	67	WHITE	6.5	R0	fusion	0	0	0	diploid
+TCGA-G9-6336	1-ERG	Male	57	WHITE	10.6	R1	fusion	0	0	0	diploid
+TCGA-G9-6342	1-ERG	Male	61	WHITE	3.3	R0	fusion	0	1	0	diploid
+TCGA-G9-6351	1-ERG	Male	51	WHITE	6.8	R1	fusion	0	0	0	diploid
+TCGA-G9-6353	1-ERG	Male	58	WHITE	4.6	R1	fusion	0	0	0	diploid
+TCGA-G9-6356	1-ERG	Male	60	WHITE	8.7	R1	fusion	0	0	0	diploid
+TCGA-G9-6361	1-ERG	Male	61	WHITE	5.5	R1	fusion	0	0	0	diploid
+TCGA-G9-6363	1-ERG	Male	64	WHITE	4.6	R0	fusion	0	0	0	diploid
+TCGA-G9-6364	1-ERG	Male	72	WHITE	NA	R0	fusion	0	0	0	diploid
+TCGA-G9-6365	1-ERG	Male	71	WHITE	11.6	R1	fusion	0	0	0	diploid
+TCGA-G9-6377	1-ERG	Male	61	WHITE	3.6	R0	fusion	0	0	0	hetloss
+TCGA-G9-6384	1-ERG	Male	53	WHITE	7.4	R0	fusion	0	0	0	diploid
+TCGA-G9-6385	1-ERG	Male	66	WHITE	7.4	R0	fusion	0	0	0	diploid
+TCGA-G9-7522	1-ERG	Male	49	WHITE	6.8	R0	fusion	0	0	0	diploid
+TCGA-HC-7081	1-ERG	Male	62	WHITE	7.7	R2	fusion	0	0	0	diploid
+TCGA-HC-7211	1-ERG	Male	62	WHITE	10.9	R0	fusion	0	0	0	diploid
+TCGA-HC-7212	1-ERG	Male	56	WHITE	8	NA	fusion	0	0	0	diploid
+TCGA-HC-7213	1-ERG	Male	53	WHITE	13.5	R0	fusion	0	0	0	diploid
+TCGA-HC-7230	1-ERG	Male	50	WHITE	3	R0	fusion	0	0	0	diploid
+TCGA-HC-7231	1-ERG	Male	66	WHITE	3.7	R0	fusion	0	0	0	diploid
+TCGA-HC-7232	1-ERG	Male	66	WHITE	9.6	R0	fusion	0	0	0	diploid
+TCGA-HC-7744	1-ERG	Male	46	WHITE	4.4	R1	fusion	0	0	0	diploid
+TCGA-HC-7747	1-ERG	Male	52	WHITE	3.5	NA	fusion	0	0	0	diploid
+TCGA-HC-7818	1-ERG	Male	66	WHITE	4.5	R0	fusion	0	0	0	diploid
+TCGA-HC-7820	1-ERG	Male	72	WHITE	5.2	R0	fusion	0	0	0	hetloss
+TCGA-HC-7821	1-ERG	Male	54	WHITE	31	NA	fusion	0	0	0	diploid
+TCGA-HC-8213	1-ERG	Male	48	WHITE	3.6	R0	fusion	0	0	0	diploid
+TCGA-HC-8262	1-ERG	Male	57	WHITE	4.7	R0	fusion	0	0	0	hetloss
+TCGA-HC-A48F	1-ERG	Male	47	WHITE	NA	R1	fusion	0	0	0	diploid
+TCGA-HC-A632	1-ERG	Male	68	WHITE	2.2	R0	fusion	0	0	0	diploid
+TCGA-HC-A76X	1-ERG	Male	NA	WHITE	NA	NA	fusion	0	0	0	diploid
+TCGA-HC-A8D0	1-ERG	Male	NA	WHITE	NA	NA	fusion	0	0	0	diploid
+TCGA-HC-A8D1	1-ERG	Male	NA	WHITE	NA	NA	fusion	0	0	0	hetloss
+TCGA-HI-7171	1-ERG	Male	56	WHITE	5.6	R1	fusion	0	0	0	hetloss
+TCGA-J4-A67T	1-ERG	Male	63	WHITE	5.5	R0	fusion	0	0	0	diploid
+TCGA-J4-A6G1	1-ERG	Male	68	WHITE	8.2	R0	fusion	0	0	0	diploid
+TCGA-J4-A6M7	1-ERG	Male	53	WHITE	6.2	R0	fusion	0	0	0	diploid
+TCGA-J4-A83I	1-ERG	Male	63	WHITE	NA	R0	fusion	0	0	0	diploid
+TCGA-J4-A83K	1-ERG	Male	52	WHITE	NA	R0	fusion	0	0	0	diploid
+TCGA-J9-A52B	1-ERG	Male	62	WHITE	7.2	R1	fusion	0	0	0	hetloss
+TCGA-J9-A8CK	1-ERG	Male	NA	WHITE	NA	NA	fusion	0	0	0	diploid
+TCGA-J9-A8CM	1-ERG	Male	NA	WHITE	NA	NA	fusion	0	0	0	diploid
+TCGA-KC-A4BR	1-ERG	Male	NA	WHITE	NA	NA	fusion	0	0	0	diploid
+TCGA-KC-A7F6	1-ERG	Male	NA	WHITE	NA	NA	fusion	0	0	0	diploid
+TCGA-KK-A59Y	1-ERG	Male	56	WHITE	14.7	RX	fusion	0	0	0	diploid
+TCGA-KK-A6E1	1-ERG	Male	57	WHITE	25.6	RX	fusion	0	0	0	diploid
+TCGA-KK-A6E6	1-ERG	Male	69	WHITE	10.3	R0	fusion	0	0	0	diploid
+TCGA-KK-A7AU	1-ERG	Male	NA	WHITE	NA	NA	fusion	0	0	0	diploid
+TCGA-KK-A7B1	1-ERG	Male	65	WHITE	NA	R0	fusion	0	0	0	diploid
+TCGA-KK-A7B4	1-ERG	Male	NA	WHITE	NA	NA	fusion	0	0	0	diploid
+TCGA-KK-A8I4	1-ERG	Male	NA	WHITE	NA	NA	fusion	0	0	0	diploid
+TCGA-KK-A8I6	1-ERG	Male	NA	WHITE	NA	NA	fusion	0	0	0	diploid
+TCGA-KK-A8I8	1-ERG	Male	NA	WHITE	NA	NA	fusion	0	0	0	diploid
+TCGA-KK-A8IA	1-ERG	Male	NA	WHITE	NA	NA	fusion	0	0	0	diploid
+TCGA-KK-A8IC	1-ERG	Male	NA	WHITE	NA	NA	fusion	0	0	0	diploid
+TCGA-KK-A8IH	1-ERG	Male	NA	WHITE	NA	NA	fusion	0	0	0	diploid
+TCGA-KK-A8II	1-ERG	Male	NA	WHITE	NA	NA	fusion	0	0	0	diploid
+TCGA-M7-A720	1-ERG	Male	53	WHITE	NA	R0	fusion	0	0	0	diploid
+TCGA-QU-A6IP	1-ERG	Male	66	WHITE	4.5	R0	fusion	0	0	0	diploid
+TCGA-V1-A8WS	1-ERG	Male	NA	WHITE	NA	NA	fusion	0	0	0	diploid
+TCGA-V1-A8WW	1-ERG	Male	NA	WHITE	NA	NA	fusion	0	0	0	hetloss
+TCGA-VN-A88K	1-ERG	Male	58	WHITE	NA	R0	fusion	0	0	0	diploid
+TCGA-VN-A88L	1-ERG	Male	54	WHITE	NA	R0	fusion	0	0	0	diploid
+TCGA-VN-A88Q	1-ERG	Male	60	WHITE	NA	R0	fusion	0	0	0	diploid
+TCGA-VP-A872	1-ERG	Male	60	WHITE	NA	R0	fusion	0	0	0	diploid
+TCGA-VP-A876	1-ERG	Male	46	WHITE	NA	R0	fusion	0	0	0	diploid
+TCGA-VP-A879	1-ERG	Male	70	WHITE	NA	R0	fusion	0	0	0	diploid
+TCGA-VP-A87D	1-ERG	Male	54	WHITE	NA	R0	fusion	0	0	0	diploid
+TCGA-VP-A87K	1-ERG	Male	63	WHITE	NA	R1	fusion	0	0	0	diploid
+TCGA-XJ-A9DI	1-ERG	Male	62	WHITE	NA	R0	fusion	0	0	0	diploid
+TCGA-XJ-A9DK	1-ERG	Male	63	WHITE	NA	R0	fusion	0	0	0	diploid
+TCGA-XQ-A8TB	1-ERG	Male	NA	WHITE	NA	NA	fusion	0	0	0	diploid
+TCGA-YL-A8HJ	1-ERG	Male	58	WHITE	NA	R0	fusion	0	0	0	hetloss
+TCGA-YL-A8HK	1-ERG	Male	59	WHITE	NA	R1	fusion	0	0	0	diploid
+TCGA-YL-A8HL	1-ERG	Male	58	WHITE	NA	R1	fusion	0	0	0	diploid
+TCGA-YL-A8SA	1-ERG	Male	69	WHITE	NA	R1	fusion	0	0	0	diploid
+TCGA-YL-A8SF	1-ERG	Male	62	WHITE	NA	R1	fusion	0	0	0	diploid
+TCGA-YL-A8SL	1-ERG	Male	74	WHITE	NA	R0	fusion	0	0	0	diploid
+TCGA-YL-A8SP	1-ERG	Male	58	WHITE	NA	R1	fusion	0	0	0	diploid
+TCGA-ZG-A8QZ	1-ERG	Male	65	WHITE	NA	R1	fusion	0	0	0	diploid
+TCGA-2A-A8W1	2-ETV1	Male	54	ASIAN	NA	R1	none	0	0	0	hetloss
+TCGA-V1-A8MJ	2-ETV1	Male	NA	BLACK OR AFRICAN AMERICAN	NA	NA	none	0	0	0	diploid
+TCGA-VP-A87J	2-ETV1	Male	56	BLACK OR AFRICAN AMERICAN	NA	R2	none	1	0	0	diploid
+TCGA-2A-A8W3	2-ETV1	Male	69	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-CH-5748	2-ETV1	Male	64	WHITE	1.6	R1	none	0	0	0	diploid
+TCGA-CH-5750	2-ETV1	Male	72	WHITE	13.2	R0	none	0	0	0	hetloss
+TCGA-CH-5753	2-ETV1	Male	70	WHITE	4.5	R0	none	0	0	0	diploid
+TCGA-EJ-5501	2-ETV1	Male	55	WHITE	2.7	R0	none	0	0	0	diploid
+TCGA-EJ-5504	2-ETV1	Male	65	WHITE	8.6	R1	none	0	0	0	diploid
+TCGA-EJ-5510	2-ETV1	Male	48	WHITE	15.3	R0	none	0	0	0	diploid
+TCGA-EJ-5519	2-ETV1	Male	64	WHITE	15	R0	none	0	0	0	diploid
+TCGA-EJ-7318	2-ETV1	Male	51	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-EJ-7788	2-ETV1	Male	53	WHITE	26.6	R0	none	0	0	0	diploid
+TCGA-EJ-8474	2-ETV1	Male	69	WHITE	7.9	R0	none	0	0	0	hetloss
+TCGA-EJ-A7NH	2-ETV1	Male	56	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-EJ-A8FU	2-ETV1	Male	64	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-G9-6348	2-ETV1	Male	68	WHITE	4.6	R0	none	0	0	0	hetloss
+TCGA-G9-6494	2-ETV1	Male	66	WHITE	87	R1	none	0	0	0	hetloss
+TCGA-HC-A631	2-ETV1	Male	67	WHITE	3.3	R1	none	0	0	0	diploid
+TCGA-HC-A8CY	2-ETV1	Male	NA	WHITE	NA	NA	none	0	0	0	hetloss
+TCGA-J4-A83M	2-ETV1	Male	64	WHITE	NA	R1	none	0	0	0	diploid
+TCGA-KK-A7AP	2-ETV1	Male	NA	WHITE	NA	NA	none	0	0	1	hetloss
+TCGA-KK-A7B3	2-ETV1	Male	NA	WHITE	NA	NA	none	0	0	0	diploid
+TCGA-M7-A71Y	2-ETV1	Male	55	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-SU-A7E7	2-ETV1	Male	NA	WHITE	NA	NA	none	0	0	0	diploid
+TCGA-YL-A8SC	2-ETV1	Male	66	WHITE	NA	R1	none	0	0	0	diploid
+TCGA-YL-A8SJ	2-ETV1	Male	60	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-YL-A9WH	2-ETV1	Male	67	WHITE	NA	R1	none	0	0	0	diploid
+TCGA-EJ-5511	3-ETV4	Male	55	BLACK OR AFRICAN AMERICAN	9.7	R0	none	0	0	0	hetloss
+TCGA-CH-5762	3-ETV4	Male	60	WHITE	17.2	R1	none	0	0	0	diploid
+TCGA-CH-5763	3-ETV4	Male	66	WHITE	14.8	R0	none	0	0	0	diploid
+TCGA-CH-5771	3-ETV4	Male	63	WHITE	8.1	R0	none	0	0	0	diploid
+TCGA-EJ-A7NM	3-ETV4	Male	64	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-G9-6371	3-ETV4	Male	58	WHITE	6.3	R1	none	0	0	0	diploid
+TCGA-HC-7749	3-ETV4	Male	70	WHITE	4.2	R0	none	0	0	0	diploid
+TCGA-HC-A76W	3-ETV4	Male	NA	WHITE	NA	NA	none	0	0	1	diploid
+TCGA-HI-7168	3-ETV4	Male	62	WHITE	5.5	R0	none	0	0	0	hetloss
+TCGA-KC-A7FD	3-ETV4	Male	NA	WHITE	NA	NA	none	0	0	0	diploid
+TCGA-M7-A725	3-ETV4	Male	56	WHITE	NA	R1	none	0	0	0	diploid
+TCGA-V1-A8WV	3-ETV4	Male	NA	WHITE	NA	NA	none	0	0	0	diploid
+TCGA-V1-A8X3	3-ETV4	Male	NA	WHITE	NA	NA	none	0	0	0	diploid
+TCGA-XQ-A8TA	3-ETV4	Male	NA	WHITE	NA	NA	none	0	0	0	diploid
+TCGA-V1-A8WN	4-FLI1	Male	NA	BLACK OR AFRICAN AMERICAN	NA	NA	none	0	0	0	diploid
+TCGA-CH-5738	4-FLI1	Male	72	WHITE	10	R0	none	0	0	1	diploid
+TCGA-H9-7775	4-FLI1	Male	68	WHITE	7.2	NA	none	0	0	0	diploid
+TCGA-HC-7079	4-FLI1	Male	51	WHITE	5.5	R0	none	0	0	0	diploid
+TCGA-KK-A8I9	5-SPOP	Male	NA	Not Available	NA	NA	none	0	0	0	diploid
+TCGA-VN-A88O	5-SPOP	Male	49	Not Available	NA	R0	none	0	0	0	diploid
+TCGA-Y6-A8TL	5-SPOP	Male	65	Not Available	NA	R0	none	0	0	0	diploid
+TCGA-KK-A6E0	5-SPOP	Male	59	ASIAN	13.9	R0	none	0	0	0	diploid
+TCGA-EJ-7782	5-SPOP	Male	71	BLACK OR AFRICAN AMERICAN	NA	R0	none	0	0	0	diploid
+TCGA-EJ-A65E	5-SPOP	Male	67	BLACK OR AFRICAN AMERICAN	56.4	R0	none	0	0	0	diploid
+TCGA-HC-8258	5-SPOP	Male	56	BLACK OR AFRICAN AMERICAN	4.3	NA	none	0	0	0	diploid
+TCGA-HC-8261	5-SPOP	Male	48	BLACK OR AFRICAN AMERICAN	14.4	R0	none	0	0	0	diploid
+TCGA-KK-A59X	5-SPOP	Male	55	BLACK OR AFRICAN AMERICAN	26.3	R1	none	0	0	0	diploid
+TCGA-KK-A59Z	5-SPOP	Male	66	BLACK OR AFRICAN AMERICAN	3.5	R0	none	0	0	0	diploid
+TCGA-KK-A8IF	5-SPOP	Male	57	BLACK OR AFRICAN AMERICAN	NA	R0	none	0	0	0	diploid
+TCGA-VN-A88R	5-SPOP	Male	53	BLACK OR AFRICAN AMERICAN	NA	R0	none	0	0	0	diploid
+TCGA-XJ-A83G	5-SPOP	Male	51	BLACK OR AFRICAN AMERICAN	NA	NA	none	0	0	0	diploid
+TCGA-CH-5788	5-SPOP	Male	69	WHITE	19.4	R0	none	0	0	0	diploid
+TCGA-EJ-5505	5-SPOP	Male	57	WHITE	4	R0	none	0	0	0	diploid
+TCGA-EJ-5509	5-SPOP	Male	63	WHITE	4.1	R0	none	0	0	0	diploid
+TCGA-EJ-5531	5-SPOP	Male	62	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-EJ-7115	5-SPOP	Male	65	WHITE	3.6	R0	none	0	0	0	diploid
+TCGA-EJ-7123	5-SPOP	Male	59	WHITE	5.6	R0	none	0	0	0	diploid
+TCGA-EJ-7330	5-SPOP	Male	68	WHITE	6.2	R0	none	0	1	0	diploid
+TCGA-EJ-8468	5-SPOP	Male	63	WHITE	25.4	R0	none	0	0	0	diploid
+TCGA-EJ-A8FS	5-SPOP	Male	66	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-FC-7961	5-SPOP	Male	62	WHITE	24.7	NA	none	0	0	0	diploid
+TCGA-G9-6333	5-SPOP	Male	66	WHITE	10.8	R0	none	0	0	0	diploid
+TCGA-G9-7510	5-SPOP	Male	66	WHITE	9.7	R1	none	0	0	0	diploid
+TCGA-HC-7080	5-SPOP	Male	66	WHITE	4.1	R0	none	0	0	0	diploid
+TCGA-J4-A6G3	5-SPOP	Male	57	WHITE	7.5	R1	none	0	0	0	diploid
+TCGA-KK-A8IK	5-SPOP	Male	NA	WHITE	NA	NA	none	0	0	0	diploid
+TCGA-VP-A878	5-SPOP	Male	58	WHITE	NA	R1	none	0	0	0	hetloss
+TCGA-VP-A87B	5-SPOP	Male	63	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-VP-A87H	5-SPOP	Male	76	WHITE	NA	R2	none	0	0	0	diploid
+TCGA-YL-A8HM	5-SPOP	Male	66	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-YL-A8S8	5-SPOP	Male	68	WHITE	NA	R1	none	0	0	0	diploid
+TCGA-YL-A8SH	5-SPOP	Male	69	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-YL-A8SO	5-SPOP	Male	64	WHITE	NA	R1	none	0	0	0	diploid
+TCGA-ZG-A8QX	5-SPOP	Male	56	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-ZG-A8QY	5-SPOP	Male	67	WHITE	NA	RX	none	0	0	0	diploid
+TCGA-EJ-7789	6-FOXA1	Male	66	BLACK OR AFRICAN AMERICAN	14.9	R0	none	0	0	0	diploid
+TCGA-CH-5737	6-FOXA1	Male	73	WHITE	14.7	R0	none	0	0	0	diploid
+TCGA-EJ-5494	6-FOXA1	Male	50	WHITE	3.8	R0	none	0	0	0	diploid
+TCGA-HC-7210	6-FOXA1	Male	74	WHITE	8.9	R0	none	0	0	0	diploid
+TCGA-HC-8265	6-FOXA1	Male	66	WHITE	5.2	R1	none	0	0	0	diploid
+TCGA-J9-A8CP	6-FOXA1	Male	NA	WHITE	NA	NA	none	0	0	0	diploid
+TCGA-KK-A8IB	6-FOXA1	Male	65	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-KK-A8IG	6-FOXA1	Male	NA	WHITE	NA	NA	none	0	0	0	hetloss
+TCGA-YL-A9WI	6-FOXA1	Male	63	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-G9-7523	7-IDH1	Male	44	BLACK OR AFRICAN AMERICAN	11.3	R1	none	0	0	0	diploid
+TCGA-CH-5772	7-IDH1	Male	63	WHITE	24.6	R1	none	0	0	1	diploid
+TCGA-EJ-7125	7-IDH1	Male	44	WHITE	26.6	R0	none	0	0	0	diploid
+TCGA-HC-7075	8-other	Male	63	Not Available	5.1	R0	none	0	0	0	diploid
+TCGA-KK-A8ID	8-other	Male	NA	Not Available	NA	NA	none	0	0	0	diploid
+TCGA-XA-A8JR	8-other	Male	68	Not Available	NA	R2	none	0	0	0	diploid
+TCGA-YJ-A8SW	8-other	Male	NA	Not Available	NA	NA	none	0	0	0	diploid
+TCGA-FC-A4JI	8-other	Male	71	ASIAN	51.7	R0	none	0	0	0	diploid
+TCGA-J4-8200	8-other	Male	47	ASIAN	8.6	R0	none	0	0	0	diploid
+TCGA-EJ-8470	8-other	Male	58	BLACK OR AFRICAN AMERICAN	NA	NA	none	0	0	0	diploid
+TCGA-EJ-A46I	8-other	Male	57	BLACK OR AFRICAN AMERICAN	8.5	R0	none	0	0	0	diploid
+TCGA-G9-6378	8-other	Male	54	BLACK OR AFRICAN AMERICAN	4.2	R1	none	0	0	0	diploid
+TCGA-HC-7737	8-other	Male	55	BLACK OR AFRICAN AMERICAN	18.1	R0	none	0	0	0	diploid
+TCGA-HC-8256	8-other	Male	53	BLACK OR AFRICAN AMERICAN	6.3	R0	none	0	0	0	diploid
+TCGA-HC-A4ZV	8-other	Male	56	BLACK OR AFRICAN AMERICAN	70	R1	none	0	0	0	diploid
+TCGA-KC-A4BL	8-other	Male	NA	BLACK OR AFRICAN AMERICAN	NA	NA	none	0	0	0	diploid
+TCGA-KK-A6E5	8-other	Male	63	BLACK OR AFRICAN AMERICAN	9.4	R0	none	0	0	0	diploid
+TCGA-KK-A7AV	8-other	Male	NA	BLACK OR AFRICAN AMERICAN	NA	NA	none	0	0	0	diploid
+TCGA-V1-A8MF	8-other	Male	NA	BLACK OR AFRICAN AMERICAN	NA	NA	none	0	0	0	diploid
+TCGA-V1-A8MG	8-other	Male	NA	BLACK OR AFRICAN AMERICAN	NA	NA	none	0	0	0	diploid
+TCGA-V1-A8ML	8-other	Male	NA	BLACK OR AFRICAN AMERICAN	NA	NA	none	0	0	0	diploid
+TCGA-V1-A8MU	8-other	Male	NA	BLACK OR AFRICAN AMERICAN	NA	NA	none	0	0	0	diploid
+TCGA-V1-A8WL	8-other	Male	NA	BLACK OR AFRICAN AMERICAN	NA	NA	none	0	0	0	diploid
+TCGA-VP-A87E	8-other	Male	59	BLACK OR AFRICAN AMERICAN	NA	R0	none	0	0	0	diploid
+TCGA-YL-A8HO	8-other	Male	67	BLACK OR AFRICAN AMERICAN	NA	R1	none	0	0	0	hetloss
+TCGA-2A-A8VO	8-other	Male	57	WHITE	NA	R1	none	0	0	0	diploid
+TCGA-CH-5751	8-other	Male	68	WHITE	22.6	R1	none	0	0	0	diploid
+TCGA-CH-5761	8-other	Male	61	WHITE	8.5	R0	none	0	0	0	diploid
+TCGA-CH-5767	8-other	Male	66	WHITE	11.6	R0	none	0	0	0	diploid
+TCGA-CH-5792	8-other	Male	57	WHITE	11.5	R1	none	0	0	0	diploid
+TCGA-EJ-5514	8-other	Male	66	WHITE	7.4	R0	none	0	0	0	diploid
+TCGA-EJ-5515	8-other	Male	60	WHITE	4.8	R0	none	0	0	0	diploid
+TCGA-EJ-5517	8-other	Male	55	WHITE	9.6	R0	none	0	0	0	diploid
+TCGA-EJ-5518	8-other	Male	66	WHITE	36	R1	none	1	0	0	diploid
+TCGA-EJ-5532	8-other	Male	57	WHITE	11.4	R0	none	0	0	0	diploid
+TCGA-EJ-7218	8-other	Male	71	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-EJ-7317	8-other	Male	71	WHITE	14	R0	none	0	0	0	diploid
+TCGA-EJ-7331	8-other	Male	64	WHITE	7	R0	none	0	0	0	diploid
+TCGA-EJ-7781	8-other	Male	65	WHITE	3.5	R0	none	0	0	0	hetloss
+TCGA-EJ-7786	8-other	Male	62	WHITE	4.5	R0	none	1	0	0	diploid
+TCGA-EJ-7791	8-other	Male	67	WHITE	4.5	R0	none	0	0	0	diploid
+TCGA-EJ-7792	8-other	Male	53	WHITE	4.6	R0	none	0	0	0	diploid
+TCGA-EJ-7794	8-other	Male	67	WHITE	5.2	R0	none	0	0	0	diploid
+TCGA-EJ-A46G	8-other	Male	71	WHITE	5.1	R0	none	0	0	0	diploid
+TCGA-EJ-A65G	8-other	Male	57	WHITE	6.8	R0	none	0	0	0	diploid
+TCGA-EJ-A65J	8-other	Male	62	WHITE	30.7	R0	none	0	0	0	diploid
+TCGA-EJ-A6RA	8-other	Male	70	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-EJ-A6RC	8-other	Male	NA	WHITE	NA	NA	none	0	0	0	diploid
+TCGA-EJ-A7NJ	8-other	Male	59	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-EJ-A8FN	8-other	Male	58	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-FC-A5OB	8-other	Male	53	WHITE	26.9	R1	none	0	0	0	diploid
+TCGA-FC-A8O0	8-other	Male	68	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-G9-6366	8-other	Male	61	WHITE	7.6	R0	none	0	0	0	diploid
+TCGA-G9-6367	8-other	Male	60	WHITE	8.5	R1	none	0	0	0	diploid
+TCGA-G9-6370	8-other	Male	52	WHITE	6.4	R0	none	0	0	0	diploid
+TCGA-G9-6499	8-other	Male	66	WHITE	8.2	R0	none	0	0	0	hetloss
+TCGA-G9-7519	8-other	Male	58	WHITE	5.1	R0	none	0	0	0	diploid
+TCGA-G9-7521	8-other	Male	52	WHITE	26.3	R0	none	0	0	0	diploid
+TCGA-HC-7078	8-other	Male	69	WHITE	25	R0	none	0	0	0	diploid
+TCGA-HC-7233	8-other	Male	73	WHITE	7.7	R1	none	0	0	0	diploid
+TCGA-HC-7736	8-other	Male	59	WHITE	5	NA	none	0	0	0	diploid
+TCGA-HC-7740	8-other	Male	59	WHITE	5.9	R0	none	0	0	0	diploid
+TCGA-HC-7742	8-other	Male	58	WHITE	5.6	R0	none	0	0	0	diploid
+TCGA-HC-7750	8-other	Male	50	WHITE	3.7	R0	none	0	0	0	diploid
+TCGA-HC-8216	8-other	Male	58	WHITE	5.2	R0	none	0	0	0	hetloss
+TCGA-HC-8264	8-other	Male	60	WHITE	13.4	R1	none	0	0	0	diploid
+TCGA-HC-8266	8-other	Male	55	WHITE	5.1	R1	none	0	0	0	diploid
+TCGA-HI-7170	8-other	Male	58	WHITE	7.4	R0	none	0	0	0	diploid
+TCGA-J9-A8CL	8-other	Male	NA	WHITE	NA	NA	none	0	0	0	hetloss
+TCGA-J9-A8CN	8-other	Male	NA	WHITE	NA	NA	none	0	0	0	diploid
+TCGA-KC-A7F3	8-other	Male	NA	WHITE	NA	NA	none	0	0	0	diploid
+TCGA-KC-A7FA	8-other	Male	NA	WHITE	NA	NA	none	0	0	0	diploid
+TCGA-KC-A7FE	8-other	Male	NA	WHITE	NA	NA	none	0	0	0	diploid
+TCGA-KK-A8IJ	8-other	Male	NA	WHITE	NA	NA	none	0	0	0	diploid
+TCGA-KK-A8IL	8-other	Male	65	WHITE	NA	R1	none	0	0	0	diploid
+TCGA-M7-A721	8-other	Male	70	WHITE	NA	R1	none	0	0	0	diploid
+TCGA-TK-A8OK	8-other	Male	NA	WHITE	NA	NA	none	0	0	0	diploid
+TCGA-VN-A88I	8-other	Male	59	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-VN-A88N	8-other	Male	62	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-VN-A88P	8-other	Male	60	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-WW-A8ZI	8-other	Male	70	WHITE	NA	R0	none	0	0	0	diploid
+TCGA-XJ-A83H	8-other	Male	NA	WHITE	NA	NA	none	0	0	0	diploid
+TCGA-YL-A8S9	8-other	Male	63	WHITE	NA	R1	none	0	0	0	diploid
+TCGA-YL-A8SB	8-other	Male	62	WHITE	NA	R1	none	0	0	0	hetloss
+TCGA-YL-A8SK	8-other	Male	67	WHITE	NA	R1	none	0	0	0	hetloss
+TCGA-YL-A8SQ	8-other	Male	61	WHITE	NA	R1	none	0	0	0	diploid
+TCGA-YL-A8SR	8-other	Male	64	WHITE	NA	R1	none	0	0	0	diploid
+TCGA-YL-A9WJ	8-other	Male	47	WHITE	NA	R1	none	0	0	0	diploid
+TCGA-ZG-A8QW	8-other	Male	72	WHITE	NA	R0	none	0	0	0	diploid

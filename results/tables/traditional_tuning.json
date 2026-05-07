@@ -1,0 +1,89 @@
+{
+  "brca": {
+    "random": {
+      "best_config": {
+        "sampling_strategy": "auto"
+      },
+      "best_val_macro_f1": 0.790491222784161
+    },
+    "smote": {
+      "best_config": {
+        "k_neighbors": 3,
+        "sampling_strategy": "auto"
+      },
+      "best_val_macro_f1": 0.7870053023925324
+    },
+    "adasyn": {
+      "best_config": {
+        "k_neighbors": 3,
+        "sampling_strategy": "auto"
+      },
+      "best_val_macro_f1": 0.7969438027443292
+    },
+    "borderline": {
+      "best_config": {
+        "k_neighbors": 3,
+        "sampling_strategy": "minority"
+      },
+      "best_val_macro_f1": 0.7906015738467282
+    }
+  },
+  "coad": {
+    "random": {
+      "best_config": {
+        "sampling_strategy": "minority"
+      },
+      "best_val_macro_f1": 0.9126868338583239
+    },
+    "smote": {
+      "best_config": {
+        "k_neighbors": 10,
+        "sampling_strategy": "auto"
+      },
+      "best_val_macro_f1": 0.9337668793195109
+    },
+    "adasyn": {
+      "best_config": {
+        "k_neighbors": 10,
+        "sampling_strategy": "minority"
+      },
+      "best_val_macro_f1": 0.913572737428438
+    },
+    "borderline": {
+      "best_config": {
+        "k_neighbors": 5,
+        "sampling_strategy": "minority"
+      },
+      "best_val_macro_f1": 0.9183815038254396
+    }
+  },
+  "prad": {
+    "random": {
+      "best_config": {
+        "sampling_strategy": "minority"
+      },
+      "best_val_macro_f1": 0.6521432842219264
+    },
+    "smote": {
+      "best_config": {
+        "k_neighbors": 5,
+        "sampling_strategy": "auto"
+      },
+      "best_val_macro_f1": 0.6307867787470008
+    },
+    "adasyn": {
+      "best_config": {
+        "k_neighbors": 3,
+        "sampling_strategy": "minority"
+      },
+      "best_val_macro_f1": 0.6454250981864866
+    },
+    "borderline": {
+      "best_config": {
+        "k_neighbors": 3,
+        "sampling_strategy": "minority"
+      },
+      "best_val_macro_f1": 0.6323885912890495
+    }
+  }
+}

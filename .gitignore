@@ -1,0 +1,29 @@
+# Large raw expression matrices (regenerable from URLs in data/raw/MANIFEST.md)
+data/raw/*_expression.tsv.gz
+
+# Probe / experiment scratch
+data/raw/_probe/
+
+# Generated artifacts
+data/processed/
+results/models/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+.pytest_cache/
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Orchestration
+md
