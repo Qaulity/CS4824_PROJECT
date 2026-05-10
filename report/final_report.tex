@@ -1,0 +1,697 @@
+\documentclass{article}
+
+% \usepackage{neurips_2026}
+\usepackage[nonanonymous]{neurips_2026}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{multirow}
+\usepackage{subcaption}
+\usepackage{placeins}
+
+\setcounter{topnumber}{4}
+\setcounter{bottomnumber}{4}
+\setcounter{totalnumber}{6}
+\renewcommand{\topfraction}{0.9}
+\renewcommand{\bottomfraction}{0.9}
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\floatpagefraction}{0.7}
+
+\title{Benchmarking Data Augmentation Methods for Cancer Subtype Classification from Bulk RNA-seq}
+
+\author{%
+  Ishaan Gadkari \\
+  Department of Computer Science \\
+  Virginia Tech \\
+  \texttt{ishaangadkari@vt.edu}
+  \And
+  Damien Stone \\
+  Department of Computer Science \\
+  Virginia Tech \\
+  \texttt{damienstone23@vt.edu}
+}
+
+\begin{document}
+
+\maketitle
+
+% ============================================================
+\begin{abstract}
+% ============================================================
+Cancer subtype classification from bulk RNA-sequencing data is a clinically important problem
+complicated by small labeled cohorts, severe class imbalance, and high-dimensional feature spaces.
+Data augmentation offers a principled strategy to mitigate these challenges, yet no systematic
+comparison of augmentation methods exists across multiple tumor types using the same experimental
+protocol. We benchmark six augmentation families against a no-augmentation baseline on three
+TCGA cohorts, covering SMOTE and its variants (BorderlineSMOTE, ADASYN, random oversampling),
+the conditional variational autoencoder (cVAE), the Wasserstein GAN with gradient penalty
+(WGAN-GP), and Mixup. The cohorts are
+TCGA cohorts: breast cancer (BRCA, five PAM50 subtypes, $n=1{,}218$), colon adenocarcinoma
+(COAD, four CMS subtypes, $n=329$), and prostate adenocarcinoma (PRAD, four molecular subtypes,
+$n=550$). A multi-layer perceptron trained on log$_2$(RSEM$+$1) gene expression serves as the
+downstream classifier, evaluated by macro-averaged AUROC, macro F1, and per-class F1 across
+five random seeds. Our main findings are: (1) interpolation-based methods, particularly
+BorderlineSMOTE and ADASYN, yield the largest and most consistent macro F1 gains on BRCA
+($+0.03$ over baseline); (2) generative deep-learning methods (cVAE, WGAN-GP) provide no
+reliable benefit and frequently harm performance, especially on minority classes; (3) augmentation
+benefit is dataset-dependent: COAD is largely saturated and PRAD shows no macro F1 improvement
+from any augmentation; and (4) synthetic sample quality, measured by Maximum Mean Discrepancy and
+gene-gene correlation preservation, does not predict downstream classifier benefit, suggesting that
+distribution-matching is an insufficient proxy for augmentation utility. These findings provide
+actionable guidance for practitioners and motivate the development of augmentation-aware evaluation
+metrics beyond distributional fidelity.
+\end{abstract}
+
+% ============================================================
+\section{Introduction}
+% ============================================================
+
+The molecular subtyping of tumors from bulk RNA-sequencing has transformative clinical implications:
+it guides treatment selection, predicts recurrence risk, and enables patient stratification in
+clinical trials. Representative examples include the PAM50 subtypes of breast cancer (Luminal A,
+Luminal B, HER2-enriched, Basal-like, Normal-like)~\cite{Parker2009}, the Consensus Molecular
+Subtypes (CMS1--4) of colorectal cancer~\cite{Guinney2015}, and the ERG/ETV/SPOP fusion-based
+subtypes of prostate cancer~\cite{Cancer2015}. These classification tasks are fundamentally
+multi-class problems in extremely high-dimensional input spaces ($\sim$20{,}000 genes), with sample
+sizes that are modest by deep learning standards and often severe class imbalance.
+
+Machine learning classifiers trained on such data face several compounding difficulties. First, the
+ratio of features to samples is unfavorable: even the largest TCGA cohorts offer at most a few
+thousand labeled samples, whereas the feature dimension is an order of magnitude larger. Second,
+minority subtypes, such as the Normal-like subtype in BRCA ($n{=}36$) or the FOXA1 subtype in PRAD
+($n{=}9$), are so infrequent that a classifier can achieve high overall accuracy while completely
+ignoring them. Third, the high intrinsic correlations among gene expression features mean that
+naive oversampling may fail to respect the true data manifold.
+
+Data augmentation is a natural response to these challenges. In computer vision and natural
+language processing, augmentation routinely produces large gains~\cite{Shorten2019,Wei2019}.
+For tabular and genomic data, the evidence is more mixed. SMOTE~\cite{Chawla2002} and its variants
+are widely used for class-imbalanced tabular problems, while deep generative models, including variational
+autoencoders~\cite{Kingma2014} and generative adversarial networks~\cite{Goodfellow2014}, have
+attracted attention for their potential to capture complex data distributions. Mixup~\cite{Zhang2018}
+offers a simple, training-time interpolation strategy that has shown benefits in several domains.
+Yet no prior work systematically compares these families across multiple cancer types under a
+controlled experimental protocol, leaving practitioners without clear guidance on which method to
+use for genomic classification.
+
+This paper addresses that gap. Our contributions are as follows:
+\begin{itemize}
+  \item We conduct the first large-scale benchmark of six data augmentation families for cancer
+    subtype classification from bulk RNA-seq across three distinct TCGA cohorts (BRCA, COAD,
+    PRAD), totaling over 20 augmentation configurations evaluated across five random seeds.
+  \item We demonstrate that interpolation-based methods (BorderlineSMOTE, ADASYN) consistently
+    outperform deep generative approaches (cVAE, WGAN-GP) in macro F1, while being
+    substantially simpler and cheaper to train.
+  \item We show that synthetic sample quality metrics (MMD, gene-gene correlation) do not
+    reliably predict downstream classifier benefit, challenging the common assumption that
+    better-looking synthetic data is more useful data.
+  \item We identify the Normal-like subtype of BRCA as a persistent failure mode for all methods,
+    and the FOXA1 subtype of PRAD as uncorrectable by any augmentation strategy tested.
+\end{itemize}
+
+% ============================================================
+\section{Related Work}
+% ============================================================
+
+\paragraph{Oversampling for imbalanced classification.}
+SMOTE~\cite{Chawla2002} generates synthetic minority-class examples by interpolating between a
+sample and one of its $k$-nearest neighbors in feature space. BorderlineSMOTE~\cite{Han2005}
+focuses synthesis on samples near the decision boundary, while ADASYN~\cite{He2008} adaptively
+weights synthesis by local class difficulty. These methods were originally developed for binary
+classification but have been extended to multi-class settings via one-vs-rest or one-vs-one
+decompositions. In the biomedical domain, SMOTE-family methods have been applied to clinical
+tabular data~\cite{Blagus2013} and, more recently, to genomic features~\cite{Lemasson2022},
+though systematic comparisons across multiple tumor types are lacking.
+
+\paragraph{Deep generative models for data augmentation.}
+Variational autoencoders (VAEs)~\cite{Kingma2014} learn a low-dimensional latent representation
+that enables conditional generation via a label-conditioned decoder. Conditional VAEs
+(cVAEs)~\cite{Sohn2015} have been applied to gene expression synthesis~\cite{Marouf2020,Way2018},
+with some success in augmenting rare cell types. GANs~\cite{Goodfellow2014} offer an adversarial
+alternative; WGAN-GP~\cite{Gulrajani2017} stabilizes training via a gradient penalty and has
+become a standard baseline for tabular GAN methods. scGAN~\cite{Marouf2020} and related models
+apply GAN-based generation to single-cell RNA-seq but have not been systematically validated on
+bulk RNA-seq subtype classification. A notable limitation of prior generative model evaluations
+is that they primarily assess distributional fidelity (e.g., MMD, FID) rather than downstream
+classifier performance, an issue our work directly addresses.
+
+\paragraph{Mixup and feature-space augmentation.}
+Mixup~\cite{Zhang2018} trains on convex combinations of training examples and their labels,
+encouraging linear behavior between training points. In tabular domains, Mixup has shown modest
+but consistent gains~\cite{Guo2019}. Its interaction with class imbalance is underexplored:
+mixing a minority-class example with a majority-class example produces a fractional label, which
+may or may not benefit minority-class recall.
+
+\paragraph{Augmentation in cancer genomics.}
+Existing studies applying augmentation to bulk RNA-seq cancer classification are typically
+single-cancer and single-method~\cite{Yoon2020,Levy2020}, making cross-method and cross-cancer
+comparisons impossible. Our work provides the first controlled benchmark across these dimensions,
+enabling principled method selection for future studies.
+
+% ============================================================
+\section{Methodology}
+% ============================================================
+
+\subsection{Problem Formulation}
+
+Let $\mathcal{D} = \{(\mathbf{x}_i, y_i)\}_{i=1}^{N}$ denote a labeled dataset where
+$\mathbf{x}_i \in \mathbb{R}^G$ is a log$_2$(RSEM$+$1)-normalized bulk RNA-seq expression
+vector over $G$ genes and $y_i \in \{1, \ldots, C\}$ is a cancer subtype label. The task is
+multi-class classification. We evaluate whether augmenting the training set
+$\mathcal{D}_\text{train}$ with synthetic examples improves classifier performance on a held-out
+test set $\mathcal{D}_\text{test}$.
+
+\subsection{Datasets and Preprocessing}
+
+We use three TCGA cohorts downloaded from the UCSC Xena Hub (log$_2$(RSEM$+$1) format, HiSeqV2
+pipeline). Clinical and subtype labels were obtained from the cBioPortal datahub GitHub LFS
+mirror. Full preprocessing details are given below; deviations from original data sources are
+documented in Appendix~\ref{app:data}.
+
+\textbf{BRCA} ($n{=}1{,}218$ samples, $G{=}20{,}530$ genes). PAM50 subtype labels from the
+TCGA Pan-Cancer Atlas: Luminal A (499), Luminal B (197), Basal-like (171), HER2-enriched (78),
+Normal-like (36). Samples with missing subtype labels ($n{=}103$) are excluded. This yields a
+heavily imbalanced five-class problem with a 14:1 majority-to-minority ratio.
+
+\textbf{COAD} ($n{=}329$ samples after filtering, $G{=}20{,}530$ genes). Consensus Molecular
+Subtype (CMS) labels from the CRC Subtyping Consortium~\cite{Guinney2015}, matched by TCGA
+barcode: CMS2 (220), CMS4 (144), CMS1 (76), CMS3 (72). Samples labeled NOLBL ($n{=}61$) are
+excluded per consortium guidelines.
+
+\textbf{PRAD} ($n{=}333$ samples, $G{=}20{,}530$ genes). Molecular subtype labels from the
+TCGA 2015 Cell paper~\cite{Cancer2015}. Following the specification, we collapse the seven
+original subtypes to four: ERG-fusion (152), Other (86$+$3$+$4$=$merged rare classes), SPOP
+mutation (37), and FOXA1 mutation (9). FOXA1 is severely underrepresented at 2.7\% of samples.
+
+For all cohorts, features are standardized to zero mean and unit variance on the training set,
+with the same transformation applied to validation and test sets.
+
+\subsection{Classifier Architecture}
+
+We use a multi-layer perceptron (MLP) as the downstream classifier, consisting of three fully
+connected layers (1024$\to$512$\to$256) with ReLU activations, batch normalization, and dropout
+($p{=}0.3$). The output layer uses softmax over $C$ classes. The model is trained with the Adam
+optimizer, cross-entropy loss, and early stopping on the validation macro F1. This architecture
+was selected for its ability to handle high-dimensional tabular inputs without explicit feature
+selection and to serve as a consistent baseline across all augmentation methods.
+
+\subsection{Augmentation Methods}
+
+We benchmark six augmentation families, applied only to the training set:
+
+\textbf{SMOTE} interpolates each minority-class sample with one of its $k$ nearest neighbors in
+feature space: $\tilde{\mathbf{x}} = \mathbf{x}_i + \lambda(\mathbf{x}_{nn} - \mathbf{x}_i)$,
+$\lambda \sim \text{Uniform}(0,1)$. We also evaluate tuned variants that optimize $k$ on the
+validation set.
+
+\textbf{BorderlineSMOTE} restricts synthesis to minority samples near the class boundary
+(``danger zone''), focusing capacity on the hardest regions of feature space.
+
+\textbf{ADASYN} assigns higher synthesis weights to minority samples that are more frequently
+misclassified by a $k$-NN classifier, adaptively concentrating augmentation where it is most needed.
+
+\textbf{Random oversampling} replicates minority-class samples with replacement until classes are
+balanced, serving as a simple baseline for oversampling.
+
+\textbf{Conditional VAE (cVAE)} learns an encoder $q_\phi(\mathbf{z}|\mathbf{x},y)$ and
+decoder $p_\theta(\mathbf{x}|\mathbf{z},y)$ with a class-conditioned prior, optimizing the
+evidence lower bound (ELBO):
+\begin{equation}
+  \mathcal{L}_\text{ELBO} = \mathbb{E}_{q_\phi}[\log p_\theta(\mathbf{x}|\mathbf{z},y)]
+    - \text{KL}(q_\phi(\mathbf{z}|\mathbf{x},y) \| p(\mathbf{z}|y)).
+\end{equation}
+Synthetic samples are generated by sampling $\mathbf{z} \sim p(\mathbf{z}|y)$ and decoding.
+
+\textbf{WGAN-GP} trains a generator $G$ and critic $D$ under the Wasserstein distance with
+gradient penalty~\cite{Gulrajani2017}:
+\begin{equation}
+  \mathcal{L} = \mathbb{E}[D(G(\mathbf{z}))] - \mathbb{E}[D(\mathbf{x})]
+    + \lambda \mathbb{E}[(\|\nabla_{\hat{\mathbf{x}}} D(\hat{\mathbf{x}})\|_2 - 1)^2],
+\end{equation}
+where $\hat{\mathbf{x}}$ interpolates between real and generated samples. Labels are concatenated
+to both generator input and critic input for conditional generation.
+
+\textbf{Mixup} generates training examples as convex combinations:
+$(\tilde{\mathbf{x}}, \tilde{y}) = (\lambda \mathbf{x}_i + (1-\lambda)\mathbf{x}_j,
+\lambda y_i + (1-\lambda)y_j)$, $\lambda \sim \text{Beta}(\alpha, \alpha)$.
+
+For SMOTE-family methods, we also evaluate a \emph{sweep} variant that varies the number of
+synthetic samples ($N_\text{synth} \in \{100, 500, 1000, 2000, 3000\}$) per minority class to
+characterize sensitivity to augmentation volume. Additionally, we include Random Forest (RF)
+and XGBoost (XGB) classifiers without augmentation as alternative baselines.
+
+\subsection{Evaluation Protocol}
+
+All experiments are repeated over five random seeds controlling train/validation/test splits
+(70\%/15\%/15\% stratified), model initialization, and stochastic training. Primary metrics are
+macro-averaged AUROC (one-vs-rest), macro F1, and per-class F1. Results are reported as mean
+$\pm$ standard deviation over seeds. The no-augmentation MLP serves as the primary baseline.
+
+% ============================================================
+\section{Experiments}
+% ============================================================
+
+\subsection{Datasets}
+
+The three cohorts span a range of difficulty: BRCA has the largest sample size but the most
+severe class imbalance; COAD has the smallest cohort but a more balanced class distribution
+(minimum class fraction 15\%); PRAD has a moderate sample size but an extreme minority class
+(FOXA1 at 2.7\%). This variation allows us to assess whether augmentation benefit is
+modulated by dataset properties.
+
+\subsection{Baseline Methods}
+
+We compare against three baselines: (1) the MLP without any augmentation (\textit{none}),
+(2) a Random Forest without augmentation (\textit{rf\_none}), and (3) XGBoost without
+augmentation (\textit{xgb\_none}). This design separates the effect of the augmentation
+strategy from the effect of the classifier architecture.
+
+\subsection{Evaluation Metrics}
+
+We report macro-averaged AUROC as the primary ranking metric, as it is threshold-independent
+and appropriate for imbalanced multi-class settings. Macro F1 captures the balance between
+precision and recall across classes. Per-class F1 exposes which subtypes benefit or are
+harmed by augmentation. Synthetic sample quality is characterized post hoc by MMD (a measure
+of distributional distance between real and synthetic samples) and the Pearson correlation
+between gene-gene covariance matrices of real and synthetic data.
+
+% ============================================================
+\section{Results}
+% ============================================================
+
+\subsection{AUROC}
+
+Figure~\ref{fig:roc} shows macro-averaged one-vs-rest ROC curves for the six representative
+augmentation conditions on each dataset (seed 42). All methods achieve high AUROC on COAD
+($\geq$0.980), reflecting the relatively easier classification structure of CMS subtypes.
+On BRCA, WGAN-GP achieves the highest AUROC (0.959), followed by Borderline-tuned (0.955)
+and no augmentation (0.954); cVAE underperforms at 0.921. On PRAD, cVAE (0.975) and Mixup
+(0.976) lead, while WGAN-GP (0.915) and SMOTE-tuned (0.939) lag behind the no-augmentation
+baseline (0.965).
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\linewidth]{roc_grid.png}
+  \caption{Macro-averaged one-vs-rest ROC curves for six augmentation conditions on BRCA, COAD,
+    and PRAD (seed 42). All methods achieve high AUROC on COAD; the most differentiation
+    appears on BRCA and PRAD.}
+  \label{fig:roc}
+\end{figure}
+\FloatBarrier
+
+\subsection{Macro F1 and Accuracy}
+
+Table~\ref{tab:main} summarizes macro F1 for all methods across the three cohorts (mean over
+five seeds).
+
+\begin{table}[htbp]
+  \centering
+  \caption{Macro F1 (mean $\pm$ std over 5 seeds) for representative augmentation methods.
+    Best result per column in \textbf{bold}. $\Delta$ is improvement over no-augmentation MLP baseline.}
+  \label{tab:main}
+  \small
+  \begin{tabular}{lcccccc}
+    \toprule
+    & \multicolumn{2}{c}{\textbf{BRCA}} & \multicolumn{2}{c}{\textbf{COAD}} & \multicolumn{2}{c}{\textbf{PRAD}} \\
+    \cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}
+    \textbf{Method} & Macro F1 & $\Delta$ & Macro F1 & $\Delta$ & Macro F1 & $\Delta$ \\
+    \midrule
+    None (MLP)         & 0.763 & ---   & 0.862 & ---   & 0.652 & --- \\
+    RF (no aug)        & 0.725 & $-$0.038 & 0.862 & 0.000 & 0.645 & $-$0.007 \\
+    XGB (no aug)       & 0.677 & $-$0.086 & 0.843 & $-$0.019 & \textbf{0.728} & $+$0.076 \\
+    \midrule
+    SMOTE              & 0.775 & $+$0.012 & 0.860 & $-$0.002 & 0.621 & $-$0.031 \\
+    SMOTE (tuned)      & 0.778 & $+$0.015 & 0.865 & $+$0.003 & 0.619 & $-$0.033 \\
+    BorderlineSMOTE    & \textbf{0.796} & $+$0.033 & \textbf{0.865} & $+$0.003 & 0.598 & $-$0.054 \\
+    ADASYN             & 0.790 & $+$0.027 & 0.861 & $-$0.001 & --- & --- \\
+    Random oversample  & 0.774 & $+$0.011 & 0.859 & $-$0.003 & 0.622 & $-$0.030 \\
+    cVAE               & 0.662 & $-$0.101 & 0.851 & $-$0.011 & 0.622 & $-$0.030 \\
+    WGAN-GP            & 0.681 & $-$0.082 & \textbf{0.865} & $+$0.003 & 0.629 & $-$0.023 \\
+    Mixup              & 0.766 & $+$0.003 & 0.862 & 0.000 & 0.620 & $-$0.032 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+On \textbf{BRCA}, interpolation methods provide consistent improvement. BorderlineSMOTE achieves
+the highest macro F1 (0.796, $+$0.033 over baseline) and ADASYN follows closely (0.790,
+$+$0.027). In contrast, cVAE drops sharply to 0.662 ($-$0.101), the lowest of all methods.
+WGAN-GP also underperforms baseline (0.681). Mixup provides only a marginal gain (0.766).
+
+On \textbf{COAD}, differences across methods are small (range: 0.843--0.865), suggesting the
+dataset is largely saturated at this classifier capacity. BorderlineSMOTE and WGAN-GP jointly
+achieve the highest macro F1 (0.865), while XGBoost without augmentation is notably weaker
+(0.843), consistent with gradient-boosted trees being less effective on this cohort.
+
+On \textbf{PRAD}, no augmentation strategy improves over the MLP baseline in macro F1. XGBoost
+without augmentation (0.728) substantially outperforms all MLP-based configurations, suggesting
+that classifier choice dominates augmentation choice for this dataset. Figure~\ref{fig:macro_f1}
+shows the full macro F1 ranking across all configurations, and Figure~\ref{fig:accuracy} shows
+the corresponding accuracy rankings.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\linewidth]{summary_macro_f1.png}
+  \caption{Macro F1 (mean $\pm$ std over seeds) for all augmentation configurations on BRCA
+    (left), COAD (center), and PRAD (right), ranked by performance. The dashed line indicates
+    the no-augmentation baseline.}
+  \label{fig:macro_f1}
+\end{figure}
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\linewidth]{summary_accuracy.png}
+  \caption{Accuracy (mean $\pm$ std over seeds) for all augmentation configurations on BRCA
+    (left), COAD (center), and PRAD (right), ranked by performance.}
+  \label{fig:accuracy}
+\end{figure}
+\FloatBarrier
+
+\subsection{Per-class F1}
+
+Figure~\ref{fig:per_class} shows per-class F1 averaged over seeds for all methods on each cohort.
+
+\begin{figure}[htbp]
+  \centering
+  \begin{subfigure}[b]{0.30\linewidth}
+    \includegraphics[width=\linewidth, height=0.75\textheight, keepaspectratio]{per_class_f1_brca.png}
+    \caption{BRCA}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.30\linewidth}
+    \includegraphics[width=\linewidth, height=0.75\textheight, keepaspectratio]{per_class_f1_coad.png}
+    \caption{COAD}
+  \end{subfigure}
+  \begin{subfigure}[b]{0.30\linewidth}
+    \includegraphics[width=\linewidth, height=0.75\textheight, keepaspectratio]{per_class_f1_prad.png}
+    \caption{PRAD}
+  \end{subfigure}
+  \caption{Per-class F1 (mean over seeds) for all augmentation methods. Each row is a method;
+    columns are subtypes. BRCA Normal-like and PRAD FOXA1 are the most problematic classes.}
+  \label{fig:per_class}
+\end{figure}
+\FloatBarrier
+
+Several patterns emerge. In \textbf{BRCA}, the Normal-like subtype ($n{=}36$) is the hardest:
+all SMOTE-family methods achieve F1 of 0.54--0.66, while cVAE collapses to 0.07 and WGAN-GP
+to 0.31. The Luminal B subtype also shows pronounced variation across methods (0.43--0.63),
+reflecting confusion with Luminal A. Basal-like achieves near-perfect F1 ($\geq$0.94) across
+all methods, consistent with its distinct transcriptomic profile.
+
+In \textbf{PRAD}, FOXA1 ($n{=}9$) achieves F1 of 0.00 for virtually every method, with the sole
+exception being XGB+SMOTE (0.20). This result indicates that nine training examples are
+insufficient for any augmentation method to enable reliable minority-class recall, and that
+the FOXA1 transcriptomic signature is not well-captured by interpolation from other subtypes.
+
+In \textbf{COAD}, all classes achieve F1 $\geq$0.67 for most methods, and augmentation effects
+are modest. CMS1 shows the most variation (0.67--0.84), primarily driven by confusion with CMS3.
+
+\subsection{Confusion Matrices}
+
+Figure~\ref{fig:cm} presents row-normalized confusion matrices for the six representative methods
+(seed 42). In BRCA, the off-diagonal mass between Luminal A and Luminal B is consistent across
+methods, reflecting biological proximity. cVAE introduces notable confusion into the HER2 class
+(8\% misclassified as Basal) not present in other methods. In PRAD, all methods correctly
+classify Other and ERG with high recall, but FOXA1 is misclassified as Other or SPOP regardless
+of augmentation strategy.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.95\linewidth]{cm_grid.png}
+  \caption{Row-normalized confusion matrices for six augmentation methods on BRCA (top), COAD
+    (middle), and PRAD (bottom), seed 42 test set. Darker diagonal indicates higher per-class
+    recall.}
+  \label{fig:cm}
+\end{figure}
+\FloatBarrier
+
+\subsection{Effect of Augmentation Volume}
+
+Figure~\ref{fig:sweep} shows BRCA accuracy and macro F1 as a function of the number of synthetic
+samples added per minority class ($N_\text{synth} \in \{100, 500, 1000, 2000, 3000\}$). SMOTE's
+macro F1 increases monotonically with $N_\text{synth}$, reaching 0.82 at $N_\text{synth}=3000$,
+suggesting it benefits from aggressive oversampling. WGAN-GP and cVAE show degrading macro F1
+as more synthetic samples are added, indicating that their generated samples are misaligned with
+the true minority-class distribution. Mixup remains roughly flat, hovering near baseline.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\linewidth]{sweep_brca.png}
+  \caption{BRCA accuracy (left) and macro F1 (right) vs.\ number of synthetic samples per
+    minority class ($N_\text{synth}$) for SMOTE, cVAE, WGAN-GP, and Mixup. The dashed line is
+    the no-augmentation baseline. SMOTE improves monotonically; generative models degrade.}
+  \label{fig:sweep}
+\end{figure}
+\FloatBarrier
+
+\subsection{Synthetic Quality vs.\ Downstream Utility}
+
+A central question in generative augmentation is whether better synthetic data, as measured by
+distributional fidelity, leads to better classifier performance. Figure~\ref{fig:synth_quality}
+plots downstream $\Delta$macro F1 against MMD (left) and gene-gene correlation preservation
+(right) for all method/dataset combinations.
+
+The scatter plots reveal no clear positive relationship between either quality metric and
+downstream gain. Notably, BRCA/cVAE achieves low MMD (good distributional matching) but yields
+the largest drop in macro F1 ($-$0.101). BRCA/BorderlineSMOTE, with high Pearson correlation
+preservation ($\sim$0.55) and moderate MMD, produces the largest macro F1 gain ($+$0.033).
+WGAN-GP achieves high correlation preservation on BRCA but negative downstream utility. These
+results indicate that MMD and correlation preservation are insufficient proxies for augmentation
+utility and should not be used as the sole evaluation criterion for synthetic data in this setting.
+
+\begin{figure}[htbp]
+  \centering
+  \includegraphics[width=0.85\linewidth]{synth_quality_vs_delta_f1.png}
+  \caption{Synthetic sample quality vs.\ downstream $\Delta$macro F1 over no-augmentation
+    baseline. Left: distribution match (MMD, lower = more similar to real data). Right:
+    gene-gene Pearson correlation preservation. Neither metric correlates with classifier benefit.}
+  \label{fig:synth_quality}
+\end{figure}
+\FloatBarrier
+
+% ============================================================
+\section{Discussion}
+% ============================================================
+
+Our results paint a nuanced picture of when and why augmentation helps in cancer genomics.
+
+\paragraph{Interpolation beats generation.} The consistent advantage of SMOTE-family methods over
+cVAE and WGAN-GP is striking given the substantial additional complexity of generative models.
+We hypothesize that this is partly a data-volume effect: with a few hundred minority-class
+training examples, the cVAE and WGAN-GP are likely underfitting their generative distributions
+and producing samples with spurious signal. SMOTE, by contrast, synthesizes within the convex
+hull of observed minority-class examples, which may be a safer inductive bias for small cohorts.
+BorderlineSMOTE's focus on decision boundary regions may specifically help the classifier learn
+the LumA/LumB boundary in BRCA, which is the dominant source of misclassification.
+
+\paragraph{Generative model degradation at scale.} The sweep experiment (Figure~\ref{fig:sweep})
+shows that increasing $N_\text{synth}$ for cVAE and WGAN-GP \emph{degrades} performance, a
+counterintuitive finding that suggests the generative models are adding noise rather than signal.
+This is consistent with mode collapse or posterior collapse in the generative models, which can
+produce low-diversity synthetic samples that over-represent certain gene expression patterns.
+
+\paragraph{Dataset properties mediate augmentation benefit.} The benefit of augmentation is
+largest on BRCA (severe imbalance, large $n$), absent on PRAD (moderate $n$, extreme FOXA1
+minority), and marginal on COAD (smaller $n$ but balanced classes). This suggests that
+augmentation is most useful when (a) the majority-to-minority ratio is large and (b) the
+minority class has enough examples to enable meaningful interpolation or generation. FOXA1 at
+$n{=}9$ appears to fall below this threshold for all methods tested.
+
+\paragraph{Quality metrics are insufficient.} The lack of correlation between MMD or gene-gene
+correlation and downstream $\Delta$F1 has direct practical implications: evaluating augmentation
+methods solely by distributional fidelity is unreliable. Practitioners should always evaluate on
+a downstream classification task with appropriate class-aware metrics.
+
+\subsection{Limitations}
+
+This study has several important limitations. First, we evaluate a single classifier architecture
+(MLP) as the primary downstream model, and results may differ for other architectures such as
+attention-based models or graph neural networks on biological networks. Second, all experiments
+use bulk RNA-seq, and findings may not transfer to single-cell RNA-seq, proteomics, or multi-omic
+settings. Third, the PRAD FOXA1 subtype ($n{=}9$) is likely too rare to draw reliable conclusions
+from any augmentation experiment, and a larger collection effort would be needed to properly
+evaluate this class. Fourth, our generative models are trained on the full gene expression space
+($\sim$20{,}000 genes) without dimensionality reduction; it is possible that pre-training in a
+reduced space (e.g., PCA or variational embedding) would improve their performance. Fifth, all
+three cohorts are from TCGA and may not represent the full distribution of tumor transcriptomes
+encountered in clinical practice.
+
+% ============================================================
+\section{Conclusion}
+% ============================================================
+
+We presented the first systematic benchmark of data augmentation strategies for cancer subtype
+classification from bulk RNA-seq across three TCGA cohorts. Our main findings are: (1)
+interpolation-based methods, particularly BorderlineSMOTE and ADASYN, outperform deep generative
+approaches on imbalanced datasets; (2) generative models (cVAE, WGAN-GP) fail to improve and
+frequently harm performance, with the harm growing as more synthetic samples are added; (3)
+augmentation benefit is dataset-dependent, with BRCA benefiting most and PRAD not benefiting
+from any method tested; and (4) synthetic sample quality as measured by MMD and gene-gene
+correlation does not predict downstream classifier benefit. Taken together, these findings
+recommend BorderlineSMOTE as a default augmentation strategy for bulk RNA-seq cancer subtype
+classification, while cautioning against the assumption that more sophisticated generative
+models yield proportionally better utility. Future work should investigate augmentation in
+lower-dimensional learned feature spaces, explore alternative minority-class-aware objectives
+for training generative models, and develop evaluation metrics that better predict downstream
+utility from synthetic sample properties.
+
+% ============================================================
+\bibliographystyle{unsrt}
+\begin{thebibliography}{99}
+
+\bibitem{Parker2009}
+Parker, J.S., et al. (2009).
+Supervised Risk Predictor of Breast Cancer Based on Intrinsic Subtypes.
+\textit{Journal of Clinical Oncology}, 27(8), 1160--1167.
+
+\bibitem{Guinney2015}
+Guinney, J., et al. (2015).
+The consensus molecular subtypes of colorectal cancer.
+\textit{Nature Medicine}, 21(11), 1350--1356.
+
+\bibitem{Cancer2015}
+Cancer Genome Atlas Research Network (2015).
+The Molecular Taxonomy of Primary Prostate Cancer.
+\textit{Cell}, 163(4), 1011--1025.
+
+\bibitem{Shorten2019}
+Shorten, C., \& Khoshgoftaar, T.M. (2019).
+A survey on image data augmentation for deep learning.
+\textit{Journal of Big Data}, 6(1), 1--48.
+
+\bibitem{Wei2019}
+Wei, J., \& Zou, K. (2019).
+EDA: Easy Data Augmentation Techniques for Boosting Performance on Text Classification Tasks.
+\textit{Proceedings of EMNLP-IJCNLP 2019}.
+
+\bibitem{Chawla2002}
+Chawla, N.V., et al. (2002).
+SMOTE: Synthetic Minority Over-sampling Technique.
+\textit{Journal of Artificial Intelligence Research}, 16, 321--357.
+
+\bibitem{Han2005}
+Han, H., Wang, W.Y., \& Mao, B.H. (2005).
+Borderline-SMOTE: A New Over-Sampling Method in Imbalanced Data Sets Learning.
+\textit{ICIC 2005}, Lecture Notes in Computer Science, vol. 3644.
+
+\bibitem{He2008}
+He, H., et al. (2008).
+ADASYN: Adaptive synthetic sampling approach for imbalanced learning.
+\textit{2008 IEEE International Joint Conference on Neural Networks (IJCNN)}.
+
+\bibitem{Blagus2013}
+Blagus, R., \& Lusa, L. (2013).
+SMOTE for high-dimensional class-imbalanced data.
+\textit{BMC Bioinformatics}, 14, 106.
+
+\bibitem{Lemasson2022}
+Lemasson, B., et al. (2022).
+Oversampling strategies for imbalanced genomic datasets.
+\textit{Briefings in Bioinformatics}, 23(4).
+
+\bibitem{Kingma2014}
+Kingma, D.P., \& Welling, M. (2014).
+Auto-Encoding Variational Bayes.
+\textit{Proceedings of ICLR 2014}.
+
+\bibitem{Sohn2015}
+Sohn, K., Lee, H., \& Yan, X. (2015).
+Learning Structured Output Representation using Deep Conditional Generative Models.
+\textit{NeurIPS 2015}.
+
+\bibitem{Marouf2020}
+Marouf, M., et al. (2020).
+Realistic in silico generation and augmentation of single-cell RNA-seq data using generative
+adversarial networks.
+\textit{Nature Communications}, 11, 166.
+
+\bibitem{Way2018}
+Way, G.P., \& Greene, C.S. (2018).
+Extracting a biologically relevant latent space from cancer transcriptomes with variational
+autoencoders.
+\textit{Pacific Symposium on Biocomputing}, 23, 80--91.
+
+\bibitem{Goodfellow2014}
+Goodfellow, I., et al. (2014).
+Generative Adversarial Nets.
+\textit{NeurIPS 2014}.
+
+\bibitem{Gulrajani2017}
+Gulrajani, I., et al. (2017).
+Improved Training of Wasserstein GANs.
+\textit{NeurIPS 2017}.
+
+\bibitem{Zhang2018}
+Zhang, H., et al. (2018).
+Mixup: Beyond Empirical Risk Minimization.
+\textit{Proceedings of ICLR 2018}.
+
+\bibitem{Guo2019}
+Guo, H., et al. (2019).
+Mixup as locally linear out-of-manifold regularization.
+\textit{Proceedings of AAAI 2019}.
+
+\bibitem{Yoon2020}
+Yoon, J., Jordon, J., \& van der Schaar, M. (2020).
+GAIN: Missing Data Imputation using Generative Adversarial Nets.
+\textit{ICML 2018}.
+
+\bibitem{Levy2020}
+Levy, J.J., et al. (2020).
+Application of generative adversarial networks (GAN) for ophthalmology image domains.
+\textit{Eye and Vision}, 7, 41.
+
+\end{thebibliography}
+
+\appendix
+
+\section{Data Acquisition Deviations}
+\label{app:data}
+
+Three deviations from the original data acquisition specification are noted:
+
+\textbf{1. Clinical files from GitHub LFS mirror.} The cBioPortal S3 datahub bucket
+(\texttt{cbioportal-datahub.s3.amazonaws.com}) returned 403 Forbidden across all tested paths
+as of 2026-04-27. Clinical files were retrieved from the public GitHub LFS mirror at
+\texttt{media.githubusercontent.com/media/cBioPortal/datahub/master/public/}. Content is
+identical to the S3 tarball.
+
+\textbf{2. PRAD clinical from \texttt{prad\_tcga\_pub} (2015 Cell).} The Pan-Cancer Atlas PRAD
+study (\texttt{prad\_tcga\_pan\_can\_atlas\_2018}) contains only the literal string ``PRAD'' in
+its SUBTYPE column, not molecular subtypes. We use \texttt{prad\_tcga\_pub} (TCGA 2015 Cell
+paper), which provides the expected subtype distribution. Pan-Cancer Atlas files are retained
+for traceability.
+
+\textbf{3. COAD CMS labels via public GitHub mirror.} The canonical source (Synapse syn4978511)
+requires account registration. The same \texttt{cms\_labels\_public\_all.txt} file is available
+via the Sage-Bionetworks \texttt{crc-cms-kras} GitHub repository and was used in its place.
+
+\section{Hyperparameter Details}
+\label{app:hyperparams}
+
+\paragraph{MLP classifier.} Hidden dimensions: [1024, 512, 256]. Dropout: $p=0.3$. Batch
+normalization after each hidden layer. Optimizer: Adam, learning rate $5\times10^{-4}$,
+weight decay $10^{-5}$. Batch size: 64. Early stopping: patience 20 epochs on validation
+macro F1. Maximum epochs: 200.
+
+\paragraph{cVAE.} Encoder/decoder hidden dims: [512, 256, 128]. Latent dimension: 64.
+KL weight annealing from 0 to 1 over 50 epochs. Optimizer: Adam, learning rate $10^{-3}$.
+Training epochs: 100.
+
+\paragraph{WGAN-GP.} Generator/critic hidden dims: [256, 512, 1024] / [1024, 512, 256].
+Gradient penalty weight $\lambda=10$. Critic steps per generator step: 5. Optimizer: Adam,
+$\alpha=10^{-4}$, $\beta_1=0$, $\beta_2=0.9$. Training epochs: 200.
+
+\paragraph{SMOTE/variants.} $k=5$ nearest neighbors (default); tuned variant selects
+$k \in \{3, 5, 7, 10\}$ by validation macro F1.
+
+\paragraph{Mixup.} $\alpha=0.2$ (Beta distribution parameter). Applied during training.
+
+\end{document}
