@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -c \"import torch, sklearn, pandas, numpy, matplotlib, imblearn, xgboost, scipy; print\\(f'torch={torch.__version__} sklearn={sklearn.__version__} pandas={pandas.__version__} numpy={numpy.__version__} matplotlib={matplotlib.__version__} imblearn={imblearn.__version__} xgboost={xgboost.__version__} scipy={scipy.__version__}'\\)\")"
+    ]
+  }
+}

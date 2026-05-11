@@ -1,0 +1,15 @@
+# Pinned to versions used to produce results/tables/all_results.csv
+# (Python 3.13.13, Windows 11, CPU-only PyTorch).
+# Newer minor versions of any of these should also work.
+
+numpy==2.3.5
+pandas==2.3.3
+scipy==1.16.3
+scikit-learn==1.8.0
+imbalanced-learn==0.14.1
+matplotlib==3.10.8
+xgboost==3.2.0
+
+# CPU-only PyTorch. For a CUDA build follow the selector at
+# https://pytorch.org/get-started/locally/ instead.
+torch==2.9.1

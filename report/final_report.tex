@@ -29,15 +29,15 @@
 \title{Benchmarking Data Augmentation Methods for Cancer Subtype Classification from Bulk RNA-seq}
 
 \author{%
-  Ishaan Gadkari \\
-  Department of Computer Science \\
-  Virginia Tech \\
-  \texttt{ishaangadkari@vt.edu}
-  \And
   Damien Stone \\
   Department of Computer Science \\
   Virginia Tech \\
   \texttt{damienstone23@vt.edu}
+  \And
+  Ishaan Gadkari \\
+  Department of Computer Science \\
+  Virginia Tech \\
+  \texttt{ishaangadkari@vt.edu}
 }
 
 \begin{document}
@@ -51,13 +51,13 @@ Cancer subtype classification from bulk RNA-sequencing data is a clinically impo
 complicated by small labeled cohorts, severe class imbalance, and high-dimensional feature spaces.
 Data augmentation offers a principled strategy to mitigate these challenges, yet no systematic
 comparison of augmentation methods exists across multiple tumor types using the same experimental
-protocol. We benchmark six augmentation families against a no-augmentation baseline on three
+protocol. We benchmark seven augmentation families against a no-augmentation baseline on three
 TCGA cohorts, covering SMOTE and its variants (BorderlineSMOTE, ADASYN, random oversampling),
 the conditional variational autoencoder (cVAE), the Wasserstein GAN with gradient penalty
 (WGAN-GP), and Mixup. The cohorts are
 TCGA cohorts: breast cancer (BRCA, five PAM50 subtypes, $n=1{,}218$), colon adenocarcinoma
 (COAD, four CMS subtypes, $n=329$), and prostate adenocarcinoma (PRAD, four molecular subtypes,
-$n=550$). A multi-layer perceptron trained on log$_2$(RSEM$+$1) gene expression serves as the
+$n=333$). A multi-layer perceptron trained on log$_2$(RSEM$+$1) gene expression serves as the
 downstream classifier, evaluated by macro-averaged AUROC, macro F1, and per-class F1 across
 five random seeds. Our main findings are: (1) interpolation-based methods, particularly
 BorderlineSMOTE and ADASYN, yield the largest and most consistent macro F1 gains on BRCA
@@ -105,7 +105,7 @@ use for genomic classification.
 
 This paper addresses that gap. Our contributions are as follows:
 \begin{itemize}
-  \item We conduct the first large-scale benchmark of six data augmentation families for cancer
+  \item We conduct the first large-scale benchmark of seven data augmentation families for cancer
     subtype classification from bulk RNA-seq across three distinct TCGA cohorts (BRCA, COAD,
     PRAD), totaling over 20 augmentation configurations evaluated across five random seeds.
   \item We demonstrate that interpolation-based methods (BorderlineSMOTE, ADASYN) consistently
@@ -197,16 +197,16 @@ with the same transformation applied to validation and test sets.
 
 \subsection{Classifier Architecture}
 
-We use a multi-layer perceptron (MLP) as the downstream classifier, consisting of three fully
-connected layers (1024$\to$512$\to$256) with ReLU activations, batch normalization, and dropout
-($p{=}0.3$). The output layer uses softmax over $C$ classes. The model is trained with the Adam
-optimizer, cross-entropy loss, and early stopping on the validation macro F1. This architecture
-was selected for its ability to handle high-dimensional tabular inputs without explicit feature
-selection and to serve as a consistent baseline across all augmentation methods.
+We use a multi-layer perceptron (MLP) as the downstream classifier, consisting of two hidden
+fully connected layers ($500{\to}256{\to}128{\to}C$) with ReLU activations and dropout
+($p{=}0.5$) after each hidden layer. The output layer uses softmax over $C$ classes. The model
+is trained with the Adam optimizer (learning rate $10^{-3}$, batch size 32) and cross-entropy
+loss, with early stopping on validation loss (patience 10, maximum 50 epochs). This architecture
+follows Polepalli et al.\ and serves as a consistent baseline across all augmentation methods.
 
 \subsection{Augmentation Methods}
 
-We benchmark six augmentation families, applied only to the training set:
+We benchmark seven augmentation families, applied only to the training set:
 
 \textbf{SMOTE} interpolates each minority-class sample with one of its $k$ nearest neighbors in
 feature space: $\tilde{\mathbf{x}} = \mathbf{x}_i + \lambda(\mathbf{x}_{nn} - \mathbf{x}_i)$,
@@ -517,10 +517,10 @@ attention-based models or graph neural networks on biological networks. Second, 
 use bulk RNA-seq, and findings may not transfer to single-cell RNA-seq, proteomics, or multi-omic
 settings. Third, the PRAD FOXA1 subtype ($n{=}9$) is likely too rare to draw reliable conclusions
 from any augmentation experiment, and a larger collection effort would be needed to properly
-evaluate this class. Fourth, our generative models are trained on the full gene expression space
-($\sim$20{,}000 genes) without dimensionality reduction; it is possible that pre-training in a
-reduced space (e.g., PCA or variational embedding) would improve their performance. Fifth, all
-three cohorts are from TCGA and may not represent the full distribution of tumor transcriptomes
+evaluate this class. Fourth, all models in this study are trained on the top 500 most-variable
+genes selected on the training partition; alternative feature selection strategies (e.g.,
+pathway-aware filtering or learned embeddings) might improve generative model fidelity in
+particular. Fifth, all three cohorts are from TCGA and may not represent the full distribution of tumor transcriptomes
 encountered in clinical practice.
 
 % ============================================================
@@ -676,18 +676,21 @@ via the Sage-Bionetworks \texttt{crc-cms-kras} GitHub repository and was used in
 \section{Hyperparameter Details}
 \label{app:hyperparams}
 
-\paragraph{MLP classifier.} Hidden dimensions: [1024, 512, 256]. Dropout: $p=0.3$. Batch
-normalization after each hidden layer. Optimizer: Adam, learning rate $5\times10^{-4}$,
-weight decay $10^{-5}$. Batch size: 64. Early stopping: patience 20 epochs on validation
-macro F1. Maximum epochs: 200.
+\paragraph{MLP classifier.} Hidden dimensions: [256, 128] (input dimension 500). Dropout:
+$p=0.5$ after each hidden layer. No batch normalization. Optimizer: Adam, learning rate
+$10^{-3}$, no weight decay. Batch size: 32. Early stopping: patience 10 epochs on validation
+loss. Maximum epochs: 50.
 
-\paragraph{cVAE.} Encoder/decoder hidden dims: [512, 256, 128]. Latent dimension: 64.
-KL weight annealing from 0 to 1 over 50 epochs. Optimizer: Adam, learning rate $10^{-3}$.
-Training epochs: 100.
+\paragraph{cVAE.} Encoder hidden dims: [256, 128]; symmetric decoder. Latent dimension: 10.
+KL weight annealing linearly from 0 to 1 over the first 30 epochs, then $\beta=1$. Optimizer:
+Adam, learning rate $10^{-3}$. Batch size: 32. Training epochs: 100.
 
-\paragraph{WGAN-GP.} Generator/critic hidden dims: [256, 512, 1024] / [1024, 512, 256].
-Gradient penalty weight $\lambda=10$. Critic steps per generator step: 5. Optimizer: Adam,
-$\alpha=10^{-4}$, $\beta_1=0$, $\beta_2=0.9$. Training epochs: 200.
+\paragraph{WGAN-GP.} Generator hidden dims: [256, 512]; critic hidden dims: [512, 256]. The
+generator uses BatchNorm; the critic uses LayerNorm (BatchNorm in the critic violates the
+gradient penalty). Latent dimension: 100. Gradient penalty weight $\lambda=10$. Critic steps
+per generator step: 5. Optimizer: Adam, $\alpha=10^{-4}$, $\beta_1=0.5$, $\beta_2=0.9$.
+Batch size: 32. Training epochs: 400 (the compute-bound fallback specified in Lacan et al.,
+who use 800 on GPU).
 
 \paragraph{SMOTE/variants.} $k=5$ nearest neighbors (default); tuned variant selects
 $k \in \{3, 5, 7, 10\}$ by validation macro F1.
